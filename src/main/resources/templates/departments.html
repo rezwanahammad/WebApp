@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Students - Student Management System</title>
+    <title>Departments - Student Management System</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -50,6 +50,25 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
+        .nav-links {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .nav-btn {
+            background: #6c757d;
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .nav-btn:hover {
+            background: #5a6268;
+        }
+        
         .actions {
             margin-bottom: 20px;
         }
@@ -82,15 +101,16 @@
             background: #c82333;
         }
         
-        .student-item {
+        .department-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         
-        .student-info {
+        .department-info {
             display: flex;
             gap: 20px;
+            flex-direction: column;
         }
         
         ul {
@@ -114,11 +134,16 @@
             padding: 40px;
             color: #999;
         }
+        
+        .dept-desc {
+            color: #666;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>Student Management System</h1>
+        <h1>Department Management</h1>
         <div class="user-info">
             <span sec:authentication="name">User</span>
             <span>|</span>
@@ -130,33 +155,33 @@
     </div>
     
     <div class="container">
-        <div class="nav-links" style="margin-bottom: 20px; display: flex; gap: 10px;">
-            <a href="/students" class="nav-btn" style="background: #667eea; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-size: 14px;">Students</a>
-            <a href="/courses" class="nav-btn" style="background: #6c757d; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-size: 14px;">Courses</a>
-            <a href="/departments" class="nav-btn" style="background: #6c757d; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-size: 14px;">Departments</a>
+        <div class="nav-links">
+            <a href="/students" class="nav-btn">Students</a>
+            <a href="/courses" class="nav-btn">Courses</a>
+            <a href="/departments" class="nav-btn" style="background: #667eea;">Departments</a>
         </div>
         
         <div class="actions" sec:authorize="hasRole('TEACHER')">
-            <a href="/students/add" class="btn">Add New Student</a>
+            <a href="/departments/add" class="btn">Add New Department</a>
         </div>
         
-        <ul th:if="${!#lists.isEmpty(students)}">
-            <li th:each="student : ${students}">
-                <div class="student-item">
-                    <div class="student-info">
-                        <strong th:text="${student.name}">Name</strong>
-                        <span th:text="'Roll: ' + ${student.roll}">Roll</span>
+        <ul th:if="${!#lists.isEmpty(departments)}">
+            <li th:each="department : ${departments}">
+                <div class="department-item">
+                    <div class="department-info">
+                        <strong th:text="${department.name}">Department Name</strong>
+                        <span class="dept-desc" th:text="${department.description}">Description</span>
                     </div>
                     <a sec:authorize="hasRole('TEACHER')" 
-                       th:href="@{/students/delete/{id}(id=${student.id})}" 
+                       th:href="@{/departments/delete/{id}(id=${department.id})}" 
                        class="delete-btn"
-                       onclick="return confirm('Are you sure you want to delete this student?');">Delete</a>
+                       onclick="return confirm('Are you sure you want to delete this department?');">Delete</a>
                 </div>
             </li>
         </ul>
         
-        <div th:if="${#lists.isEmpty(students)}" class="empty-state">
-            <p>No students found. Click "Add New Student" to add one.</p>
+        <div th:if="${#lists.isEmpty(departments)}" class="empty-state">
+            <p>No departments found. Click "Add New Department" to add one.</p>
         </div>
     </div>
 </body>

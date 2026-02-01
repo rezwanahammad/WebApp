@@ -7,11 +7,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentDTO {
+public class CourseDTO {
     private Long id;
     private String name;
-    private String roll;
-    private String email;
-    private String phone;
+    private String courseCode;
+    private Integer credits;
+    private String description;
+    private Long teacherId;
     private Long departmentId;
 }

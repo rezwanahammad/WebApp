@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -40,8 +42,16 @@ public class StudentController {
     }
 
     @PostMapping("/store")
+    @PreAuthorize("hasRole('TEACHER')")
     public String storeStudent(@ModelAttribute("student") StudentDTO studentDTO, Model model) {
         studentService.saveStudent(studentDTO);
+        return "redirect:/students";
+    }
+    
+    @GetMapping("/delete/{id}")
+    @PreAuthorize("hasRole('TEACHER')")
+    public String deleteStudent(@PathVariable Long id) {
+        studentService.deleteStudent(id);
         return "redirect:/students";
     }
 }
