@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Courses - Student Management System</title>
     <style>
         body {
@@ -41,6 +42,10 @@
             font-weight: 600;
         }
         
+        .inline-form {
+            display: inline;
+        }
+        
         .container {
             max-width: 1200px;
             margin: 30px auto;
@@ -67,6 +72,10 @@
         
         .nav-btn:hover {
             background: #5a6268;
+        }
+        
+        .nav-btn.active {
+            background: #667eea;
         }
         
         .actions {
@@ -143,7 +152,7 @@
             <span sec:authentication="name">User</span>
             <span>|</span>
             <span sec:authentication="principal.authorities">Role</span>
-            <form th:action="@{/logout}" method="post" style="display: inline;">
+            <form th:action="@{/logout}" method="post" class="inline-form">
                 <button type="submit" class="logout-btn">Logout</button>
             </form>
         </div>
@@ -152,7 +161,7 @@
     <div class="container">
         <div class="nav-links">
             <a href="/students" class="nav-btn">Students</a>
-            <a href="/courses" class="nav-btn" style="background: #667eea;">Courses</a>
+            <a href="/courses" class="nav-btn active">Courses</a>
             <a href="/departments" class="nav-btn">Departments</a>
         </div>
         

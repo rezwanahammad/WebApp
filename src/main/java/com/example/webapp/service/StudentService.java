@@ -1,27 +1,25 @@
 package com.example.webapp.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
 import com.example.webapp.dto.StudentDTO;
 import com.example.webapp.entity.Department;
 import com.example.webapp.entity.Student;
 import com.example.webapp.repository.DepartmentRepository;
 import com.example.webapp.repository.StudentRepository;
-import org.modelmapper.ModelMapper;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
 
     private final StudentRepository studentRepository;
     private final DepartmentRepository departmentRepository;
-    private final ModelMapper modelMapper;
 
-    public StudentService(StudentRepository studentRepository, DepartmentRepository departmentRepository, ModelMapper modelMapper) {
+    public StudentService(StudentRepository studentRepository, DepartmentRepository departmentRepository) {
         this.studentRepository = studentRepository;
         this.departmentRepository = departmentRepository;
-        this.modelMapper = modelMapper;
     }
 
     public List<StudentDTO> getAllStudents() {

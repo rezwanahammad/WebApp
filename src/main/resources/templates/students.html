@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Students - Student Management System</title>
     <style>
         body {
@@ -41,6 +42,10 @@
             font-weight: 600;
         }
         
+        .inline-form {
+            display: inline;
+        }
+        
         .container {
             max-width: 1200px;
             margin: 30px auto;
@@ -48,6 +53,29 @@
             background: white;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav-links {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .nav-btn {
+            background: #6c757d;
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .nav-btn:hover {
+            background: #5a6268;
+        }
+        
+        .nav-btn.active {
+            background: #667eea;
         }
         
         .actions {
@@ -123,17 +151,17 @@
             <span sec:authentication="name">User</span>
             <span>|</span>
             <span sec:authentication="principal.authorities">Role</span>
-            <form th:action="@{/logout}" method="post" style="display: inline;">
+            <form th:action="@{/logout}" method="post" class="inline-form">
                 <button type="submit" class="logout-btn">Logout</button>
             </form>
         </div>
     </div>
     
     <div class="container">
-        <div class="nav-links" style="margin-bottom: 20px; display: flex; gap: 10px;">
-            <a href="/students" class="nav-btn" style="background: #667eea; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-size: 14px;">Students</a>
-            <a href="/courses" class="nav-btn" style="background: #6c757d; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-size: 14px;">Courses</a>
-            <a href="/departments" class="nav-btn" style="background: #6c757d; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-size: 14px;">Departments</a>
+        <div class="nav-links">
+            <a href="/students" class="nav-btn active">Students</a>
+            <a href="/courses" class="nav-btn">Courses</a>
+            <a href="/departments" class="nav-btn">Departments</a>
         </div>
         
         <div class="actions" sec:authorize="hasRole('TEACHER')">

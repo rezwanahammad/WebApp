@@ -1,5 +1,10 @@
 package com.example.webapp.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
 import com.example.webapp.dto.CourseDTO;
 import com.example.webapp.entity.Course;
 import com.example.webapp.entity.Department;
@@ -7,11 +12,6 @@ import com.example.webapp.entity.Teacher;
 import com.example.webapp.repository.CourseRepository;
 import com.example.webapp.repository.DepartmentRepository;
 import com.example.webapp.repository.TeacherRepository;
-import org.modelmapper.ModelMapper;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CourseService {
@@ -19,14 +19,12 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final TeacherRepository teacherRepository;
     private final DepartmentRepository departmentRepository;
-    private final ModelMapper modelMapper;
     
     public CourseService(CourseRepository courseRepository, TeacherRepository teacherRepository,
-                         DepartmentRepository departmentRepository, ModelMapper modelMapper) {
+                         DepartmentRepository departmentRepository) {
         this.courseRepository = courseRepository;
         this.teacherRepository = teacherRepository;
         this.departmentRepository = departmentRepository;
-        this.modelMapper = modelMapper;
     }
     
     public List<CourseDTO> getAllCourses() {
