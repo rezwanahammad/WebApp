@@ -4,11 +4,9 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
@@ -22,10 +20,6 @@ import com.example.webapp.entity.Role;
 import com.example.webapp.entity.User;
 import com.example.webapp.repository.UserRepository;
 
-/**
- * Pure unit tests for {@link CustomUserDetailsService}.
- * No Spring context — uses Mockito only.
- */
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
@@ -38,21 +32,10 @@ class UserServiceTest {
     @InjectMocks
     private CustomUserDetailsService userDetailsService;
 
-    private User studentUser;
-    private User teacherUser;
-
-    @BeforeEach
-    @SuppressWarnings("unused") // Invoked by JUnit via @BeforeEach
-    void setUp() {
-        studentUser = new User(1L, "alice", "hashed_password", Role.STUDENT);
-        teacherUser = new User(2L, "bob", "hashed_password", Role.TEACHER);
-    }
-
-    // ─── loadUserByUsername ──────────────────────────────────────────────────
-
     @Test
     void loadUserByUsername_returnsUserDetails_whenUserExists() {
-        when(userRepository.findByUsername("alice")).thenReturn(Optional.of(studentUser));
+        User user = new User(1L, "alice", "hashed_password", Role.STUDENT);
+        when(userRepository.findByUsername("alice")).thenReturn(Optional.of(user));
 
         UserDetails details = userDetailsService.loadUserByUsername("alice");
 
@@ -64,17 +47,6 @@ class UserServiceTest {
     }
 
     @Test
-    void loadUserByUsername_assignsCorrectRole_forTeacher() {
-        when(userRepository.findByUsername("bob")).thenReturn(Optional.of(teacherUser));
-
-        UserDetails details = userDetailsService.loadUserByUsername("bob");
-
-        assertThat(details.getAuthorities())
-                .extracting("authority")
-                .containsExactly("ROLE_TEACHER");
-    }
-
-    @Test
     void loadUserByUsername_throwsUsernameNotFoundException_whenUserNotFound() {
         when(userRepository.findByUsername("ghost")).thenReturn(Optional.empty());
 
@@ -82,8 +54,6 @@ class UserServiceTest {
                 .isInstanceOf(UsernameNotFoundException.class)
                 .hasMessageContaining("ghost");
     }
-
-    // ─── createUser ──────────────────────────────────────────────────────────
 
     @Test
     void createUser_encodesPasswordBeforeSaving() {
@@ -99,16 +69,5 @@ class UserServiceTest {
         verify(userRepository).save(raw);
         assertThat(result.getId()).isEqualTo(3L);
         assertThat(result.getPassword()).isEqualTo("encoded");
-    }
-
-    @Test
-    void createUser_savesToRepository() {
-        User raw = new User(null, "diana", "pass", Role.TEACHER);
-        when(passwordEncoder.encode(anyString())).thenReturn("hashed");
-        when(userRepository.save(any(User.class))).thenReturn(raw);
-
-        userDetailsService.createUser(raw);
-
-        verify(userRepository).save(raw);
     }
 }

@@ -3,7 +3,3 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: create-drop
-
-  docker:
-    compose:
-      enabled: false

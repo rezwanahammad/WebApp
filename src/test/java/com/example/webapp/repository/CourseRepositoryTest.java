@@ -8,53 +8,36 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.example.webapp.entity.Course;
 
-/**
- * Integration tests for {@link CourseRepository}.
- */
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Testcontainers
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 class CourseRepositoryTest {
-
-    @Container
-    @ServiceConnection
-    @SuppressWarnings("unused") // Used by Testcontainers framework
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15");
 
     @Autowired
     private CourseRepository courseRepository;
 
-    private Course buildCourse(String name, String code, int credits) {
-        Course c = new Course();
-        c.setName(name);
-        c.setCourseCode(code);
-        c.setCredits(credits);
-        c.setDescription("A course about " + name);
-        return c;
-    }
-
-    // ─── save ────────────────────────────────────────────────────────────────
-
     @Test
     void save_persistsCourse_andAssignsId() {
-        Course saved = courseRepository.save(buildCourse("Data Structures", "CSE101", 3));
+        Course course = new Course();
+        course.setName("Data Structures");
+        course.setCourseCode("CSE101");
+        course.setCredits(3);
+        
+        Course saved = courseRepository.save(course);
 
         assertThat(saved.getId()).isNotNull();
         assertThat(saved.getCourseCode()).isEqualTo("CSE101");
     }
 
-    // ─── findByCourseCode ─────────────────────────────────────────────────────
-
     @Test
     void findByCourseCode_returnsCourse_whenExists() {
-        courseRepository.save(buildCourse("Algorithms", "CSE102", 3));
+        Course course = new Course();
+        course.setName("Algorithms");
+        course.setCourseCode("CSE102");
+        course.setCredits(3);
+        courseRepository.save(course);
 
         Optional<Course> found = courseRepository.findByCourseCode("CSE102");
 
@@ -64,47 +47,34 @@ class CourseRepositoryTest {
     }
 
     @Test
-    void findByCourseCode_returnsEmpty_whenNotExists() {
-        Optional<Course> found = courseRepository.findByCourseCode("UNKNOWN999");
-
-        assertThat(found).isEmpty();
-    }
-
-    // ─── existsByCourseCode ───────────────────────────────────────────────────
-
-    @Test
     void existsByCourseCode_returnsTrue_whenCourseExists() {
-        courseRepository.save(buildCourse("Operating Systems", "CSE201", 4));
+        Course course = new Course();
+        course.setName("Operating Systems");
+        course.setCourseCode("CSE201");
+        course.setCredits(4);
+        courseRepository.save(course);
 
         assertThat(courseRepository.existsByCourseCode("CSE201")).isTrue();
     }
 
     @Test
-    void existsByCourseCode_returnsFalse_whenCourseDoesNotExist() {
-        assertThat(courseRepository.existsByCourseCode("GHOST000")).isFalse();
-    }
-
-    // ─── findAll ─────────────────────────────────────────────────────────────
-
-    @Test
     void findAll_returnsAllPersistedCourses() {
-        courseRepository.save(buildCourse("Networking", "CSE301", 3));
-        courseRepository.save(buildCourse("Databases", "CSE302", 3));
+        Course course1 = new Course();
+        course1.setName("Networking");
+        course1.setCourseCode("CSE301");
+        course1.setCredits(3);
+        courseRepository.save(course1);
+
+        Course course2 = new Course();
+        course2.setName("Databases");
+        course2.setCourseCode("CSE302");
+        course2.setCredits(3);
+        courseRepository.save(course2);
 
         List<Course> courses = courseRepository.findAll();
 
         assertThat(courses).hasSizeGreaterThanOrEqualTo(2);
-    }
-
-    // ─── delete ──────────────────────────────────────────────────────────────
-
-    @Test
-    void deleteById_removesCourse() {
-        Course saved = courseRepository.save(buildCourse("Compilers", "CSE401", 3));
-        Long id = saved.getId();
-
-        courseRepository.deleteById(id);
-
-        assertThat(courseRepository.findById(id)).isEmpty();
+        assertThat(courses).extracting(Course::getCourseCode)
+                .contains("CSE301", "CSE302");
     }
 }

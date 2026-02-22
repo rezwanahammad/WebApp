@@ -1,5 +1,4 @@
 spring:
-
   application:
     name: WebApp
 
@@ -13,7 +12,17 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
 
   docker:
     compose:
-      enabled: true
+      enabled: false
+
+logging:
+  level:
+    org.springframework.jdbc: DEBUG
+    com.zaxxer.hikari: DEBUG
+    org.hibernate: INFO
